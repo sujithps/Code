@@ -1,0 +1,61 @@
+                                     
+8 Queens Problem
+----------------------------
+1. Set Stack = [] , MatchCells =[] ,a=1, b=1
+2. Set Count = 0
+3. set A <- (a,b) 
+4. Push A to stack :: [A]
+5. increment Count :: Count=1
+6. SetMatchingCells(A)
+7. While (Count=8) {
+8.     newPos= (a,b)
+9.     if(checkPos(nePos)==ok {
+10.          push newPos :: [A,....,newPos]
+11.          increment Count :: [1+...+1]  and call SetMatchingCells(newPos)
+12.          if(Count==8) return 'Success'
+13.          increment a
+14.          set b=1
+15.     }
+16.     else{
+17.          increment b
+18.          if(b==9) {// all columns completed : Backtack
+19.               pop B <- (x,y)
+20.               decrement Count
+21.               a= x , b= y+1
+22.          }
+23.     }
+24. }
+
+
+setMatchingCells(A){
+------------------
+   (x,y) <- A
+   // add (x,y) to MatchCells[]
+   for each cell c in row x add c to MatchCells[]
+   for each cell c in column y add c to MatchCells[]
+   a= x, b=y
+   for(i=x;i>=1,b>=1;i--,b--){
+       add  (i,b) to MatchCells[]     
+   }
+   a= x, b=y
+   for(i=x;i<=8,b<=8;i++,b++){
+       add  (i,b) to MatchCells[]     
+   }
+
+   a= x, b=y
+   for(i=y;i>=1,a<=8;i--,a++){
+       add  (a,i) to MatchCells[]     
+   }
+   a= x, b=y
+   for(i=y;i<=8,a>=1;i++,a--){
+       add  (a,i) to MatchCells[]     
+   }
+
+}
+
+checkPos(pos){
+------------------
+  if pos is not in MatchCells return 'ok'
+  else return false
+
+}
