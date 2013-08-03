@@ -1,0 +1,176 @@
+package support;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import static play.libs.Json.toJson;
+
+public class Node {
+ public String name;
+ public List<Node> children;
+ 
+ public void findChildern(List<CSVData> list,List<Node> nodeList){
+   if(list.isEmpty())  {
+		 System.out.println("****LIST IS EMPTY****");
+		 return;
+	  }
+	 setName(list.get(0).getValue());
+	 
+	 //System.out.println(" Current node is "+getName());
+	 int selfIndex=list.get(0).getIndex();
+	 //System.out.println("Self Index= "+selfIndex);
+	 
+	 List<CSVData> newList=new ArrayList<CSVData>(list);
+	 newList.remove(0);
+	 
+	 List<Node> childernList=getChildren(selfIndex,newList,nodeList);
+	 //displayList("parent: "+getName(),childernList);
+	 Iterator<Node> iterator=childernList.iterator();
+	 while(iterator.hasNext()){
+		 Node childNode=iterator.next();
+		 System.out.println("parent : "+getName()+" index "+selfIndex+" Child "+ childNode.getName());
+         this.children.add(childNode);	 
+         //childNode.parseChilds();
+	 }
+	 	 
+ }
+ public List<Node> getChildren(int parentIndex,List<CSVData> list,List<Node> nodeList){
+	 List<Node> childList=new ArrayList<Node>();
+	 Iterator<CSVData> iterator=list.iterator();
+	 while(iterator.hasNext()){
+		 CSVData csv=iterator.next();
+		 if(csv.getIndex()<=parentIndex){
+			 System.out.println(" NOT MATCHING CHILD cd index "+csv.getIndex()+" name "+csv.getValue()+" par index "+parentIndex);
+			 break;
+		 }
+		 if(csv.getIndex()==(parentIndex+1)){
+			 System.out.println("MATCHING CHILD cd index "+csv.getIndex()+" name "+csv.getValue()+" par index "+parentIndex);
+			 
+			 Node node=getMatchingNode(csv.getValue(),nodeList);
+			 System.out.println("Matching node value is "+node.getName());
+			 //node.findChildern(new ArrayList<CSVData>(list),nodeList);
+			 //node.parseChilds();
+			 childList.add(node);
+		 }
+	 }
+	 return childList;
+	 
+ }
+ 
+ public static  Node getMatchingNode(String name,List<Node> nodeList){
+	 Iterator<Node> iterator = nodeList.iterator();
+	 Node node=null;
+	 while(iterator.hasNext()){
+		 node=iterator.next();
+		 if(node.name.equals(name))
+			 return node; 
+	 }
+	 return node;
+ }
+ public static void displayList(String message, List<Node> list){
+	 System.out.println(" Message "+ message);
+	 Iterator<Node> iterator=list.iterator();
+	 while(iterator.hasNext()){
+		 Node childNode=iterator.next();
+		 System.out.println("@@@ Child "+ childNode.getName());
+         
+	 }
+	 System.out.println("-----------------");
+ }
+ public void parseChilds(){
+	 if(getChildrens().isEmpty()){
+		 System.out.println("List is Empty ...!!");
+	 }
+	  Iterator<Node> iterator= this.children.iterator();
+	  while(iterator.hasNext()){
+		  Node node=iterator.next();
+		  System.out.println("parent "+getName()+" child ** " + node.getName());
+	  }
+ }
+ public Node(String name, List<Node> children) {
+ 	this.name = name;
+	this.children = children;
+ }
+
+
+ public String getName() {
+	return name;
+ }
+
+
+ public void setName(String name) {
+	this.name = name;
+ }
+
+
+ public List<Node> getChildrens() {
+	return children;
+ }
+
+
+ public void setChildren(List<Node> children) {
+	this.children = children;
+ }
+ 
+ public Node(){
+	 this.children=new ArrayList<Node>();
+	 this.name="default";
+ }
+ static List<Node> getNodeList(List<CSVData> csvList){
+	 List<Node> list=new ArrayList<Node>();
+	 Iterator<CSVData>  iterator=csvList.iterator();
+	 while(iterator.hasNext()){
+		 list.add(new Node(iterator.next().getValue(),new ArrayList<Node>()));
+	 }
+	return list; 
+ }
+ 
+ public static void displayAllList( List<Node> list){
+	 if(list.isEmpty()){
+		 return;
+	 }
+	 System.out.println(" ----- ALL LIST ---- ");
+	 Iterator<Node> iterator=list.iterator();
+	 while(iterator.hasNext()){
+		 Node childNode=iterator.next();
+		 System.out.println(" ----- ALL CHILDREN LIST ---- of "+childNode.getName());
+		 displayAllList(childNode.getChildrens());
+		 System.out.println("-------@@@-------");
+		 System.out.println("@@@ Child "+ childNode.getName());
+         
+	 }
+	 System.out.println("-------***-------");
+ }
+ 
+ public static void main(String args[]){
+	 List<CSVData> csvList=new ArrayList<CSVData>();
+	 csvList.add(new CSVData("a",1));
+	 csvList.add(new CSVData("b",2));
+	 csvList.add(new CSVData("c",2));
+	 csvList.add(new CSVData("d",3));
+	 
+	 	 
+	 List<CSVData> list=new ArrayList<CSVData>(csvList);
+	 List<Node> nodeList=getNodeList(csvList);
+	 displayList("Node List",nodeList);
+	 
+	 
+	 Iterator<CSVData>  iterator=csvList.iterator();
+	 while(iterator.hasNext()){
+		 
+		 CSVData csv=iterator.next(); 
+		 Node node=getMatchingNode(csv.getValue(), nodeList);		 
+		 node.findChildern(list,nodeList);
+		 list.remove(0);
+	 }
+	 
+	 //displayAllList(nodeList);
+     System.out.println("JSON "+toJson(nodeList));
+	
+	 
+	 
+ }
+ 
+}
+
+
