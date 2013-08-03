@@ -1,0 +1,29 @@
+package support;
+
+public class CSVData {
+  public String value;
+	public int index;
+	public String  getValue() {
+		return value;
+	}
+	public void setValue(String value) {
+		this.value = value;
+	}
+	public int getIndex() {
+		return index;
+	}
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	public CSVData() {
+		this.value = null;
+		this.index = -1;
+	}
+	public CSVData(String value, int index) {
+		this.value = value;
+		this.index = index;
+	}
+	 
+	
+ 
+}
