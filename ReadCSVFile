@@ -1,0 +1,58 @@
+package support;
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+
+import org.h2.tools.Csv;
+
+public class ReadCSVFile {
+  public static CSVData processLine(String line){
+		CSVData csvData=null;
+		if(line.trim().isEmpty()){
+			System.out.println("@@@@ERROR- NOTHING THERE IN THAT LINE @@@");
+			return csvData;
+		}
+		String array[]=line.split(",");
+		if(array.length<=0){
+			System.out.println("@@@@ERROR- NOTHING THERE @@@");
+			return csvData;
+		}
+		csvData=new CSVData(null,1); 
+		for(String element:array){
+			if(element.trim().isEmpty())
+				csvData.setIndex(csvData.getIndex()+1);
+			else
+				{
+				 csvData.value=element;
+				 break;
+				}
+		}
+		return csvData;
+	}
+	public static String readCSv(File file){
+		String result="\n";
+		try{
+			  FileInputStream fstream = new FileInputStream(file);
+			  // Get the object of DataInputStream
+			  DataInputStream in = new DataInputStream(fstream);
+			  BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			  String strLine;
+			  //Read File Line By Line
+			  while ((strLine = br.readLine()) != null)   {
+			  // Print the content on the console
+			     
+			    CSVData csvData=processLine(strLine);
+			    result+=("index: "+csvData.getIndex()+" name : "+csvData.getValue())+"\n";
+			    
+			  }
+			  //Close the input stream
+			  in.close();
+	    } catch (Exception e){//Catch exception if any
+	    	result+=("Error: " + e.getMessage());
+		  }
+		return result;
+   }
+}
